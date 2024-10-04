@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Media Library</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 2rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        /* Search Bar */
+        #searchBar {
+            width: 100%;
+            max-width: 600px;
+            padding: 15px;
+            margin: 20px auto;
+            display: block;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            outline: none;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        /* Download Title */
+        .download-title {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        /* Media Container */
+        .media-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .image-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: 200px; /* Set a fixed height */
+            width: 100%; /* Set the width to 100% of the container */
+            object-fit: cover; /* Ensures that the image scales properly */
+            border-radius: 10px;
+            display: block;
+        }
+        .download-btn {
+            display: inline-block;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 30px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        .download-btn:hover {
+            background-color: #45a049;
+        }
+        .no-media {
+            font-size: 1.2rem;
+            text-align: center;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Modern Media Library</h1>
+
+    <!-- Search Bar -->
+    <input type="text" id="searchBar" placeholder="Search for images...">
+
+    <div class="download-title">Download Images</div>
+
+    <!-- Media Container -->
+    <div class="container">
+        <div class="media-container" id="mediaContainer">
+            <!-- Media items will be displayed here dynamically -->
+        </div>
+    </div>
+
+    <script>
+    // Generate a large list of images (simulate adding 10,000+ images)
+    let mediaList = [
+    { name: "Spider man", data: "https://wallpaperaccess.com/full/19693.jpg", type: "image" },
+    { name: "Mountain Landscape", data: "https://th.bing.com/th/id/OIP.nkuxjPffchx9YZuIFyg1KQHaFj?rs=1&pid=ImgDetMain", type: "image" },
+    { name: "City Skyline", data: "https://th.bing.com/th/id/OIP.asX7s6XdHmi1RX06z22bKwHaNL?w=1536&h=2732&rs=1&pid=ImgDetMain", type: "image" },
+    { name: "Image 1", data: "https://wallpaperaccess.com/full/467397.jpg", type: "image" },
+    { name: "Image 1", data: "https://th.bing.com/th/id/OIP.qs4hvaDM4x2msK8rwOSz8gHaEA?rs=1&pid=ImgDetMain", type: "image" },
+
+    // Add more images here as needed
+];
+    for (let i = 1; i <= 10000; i++) {
+        mediaList.push({
+            name: `Image ${i}`,
+            data: `https://via.placeholder.com/300x200.png?text=Image+${i}`,
+            type: "image"
+        });
+    }
+
+    let batchSize = 50; // Load 50 images at a time
+    let currentIndex = 0;
+
+    /**
+     * Function to display media items
+     * @param {Array} items - Array of media objects to display
+     */
+    function displayMedia(items) {
+        const container = document.getElementById('mediaContainer');
+        items.forEach(item => {
+            const mediaDiv = document.createElement('div');
+            mediaDiv.className = 'image-container';
+
+            // Display image with lazy loading
+            const img = document.createElement('img');
+            img.src = item.data;
+            img.alt = item.name;
+            img.loading = 'lazy'; // Lazy loading attribute
+
+            mediaDiv.appendChild(img);
+
+            // Create Download Button
+            const downloadButton = document.createElement('a');
+            downloadButton.textContent = 'Download';
+            downloadButton.className = 'download-btn';
+            downloadButton.href = item.data;
+            downloadButton.download = item.name;
+
+            mediaDiv.appendChild(downloadButton);
+            container.appendChild(mediaDiv);
+        });
+    }
+
+    /**
+     * Function to load the next batch of images
+     */
+    function loadNextBatch() {
+        if (currentIndex < mediaList.length) {
+            const nextBatch = mediaList.slice(currentIndex, currentIndex + batchSize);
+            displayMedia(nextBatch);
+            currentIndex += batchSize;
+        }
+    }
+
+    /**
+     * Event listener for scroll to load more images dynamically (infinite scroll)
+     */
+    window.addEventListener('scroll', () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+            loadNextBatch(); // Load the next batch when the user reaches the bottom
+        }
+    });
+
+    // Initial display of first batch of media items on page load
+    loadNextBatch();
+    </script>
+
+</body>
+</html>
